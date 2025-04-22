@@ -1,110 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anniversary Surprise</title>
-    <!-- React & ReactDOM CDN -->
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anniversary Surprise</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f3f4f6;
+      padding: 50px;
+      overflow: hidden;
+    }
 
-    <!-- Babel CDN (For JSX) -->
-    <script src="https://unpkg.com/@babel/standalone"></script>
+    .heart-container {
+      margin-top: 50px;
+      font-size: 100px;
+      cursor: pointer;
+      position: relative;
+      z-index: 10;
+    }
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f3f4f6;
-            padding: 50px;
-            overflow: hidden;
-        }
+    .heart {
+      color: red;
+    }
 
-        .heart-container {
-            margin-top: 50px;
-            font-size: 100px;
-            cursor: pointer;
-            position: relative;
-            z-index: 10;
-        }
+    .falling-heart {
+      position: absolute;
+      left: 50%;
+      top: -100px;
+      font-size: 100px;
+      color: red;
+      animation: fallHeart 2s ease forwards;
+      transform: translateX(-50%);
+    }
 
-        .heart {
-            color: red;
-            animation: fallHeart 2s ease forwards;
-        }
+    @keyframes fallHeart {
+      0% {
+        transform: translate(-50%, -100px);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, 300px);
+        opacity: 1;
+      }
+    }
 
-        /* Falling effect for the heart */
-        @keyframes fallHeart {
-            0% {
-                transform: translateY(-100px);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+    .message {
+      font-size: 30px;
+      color: #ff6347;
+      font-weight: bold;
+      opacity: 0;
+      animation: fallMessage 2s ease forwards;
+      animation-delay: 1s;
+    }
 
-        .message {
-            font-size: 30px;
-            color: #ff6347;
-            font-weight: bold;
-            display: block;
-            margin-top: 20px;
-            opacity: 0;
-            animation: fallMessage 2s ease forwards;
-            animation-delay: 1s; /* Delay the fall of the message */
-        }
+    @keyframes fallMessage {
+      0% {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
-        /* Falling effect for the message */
-        @keyframes fallMessage {
-            0% {
-                transform: translateY(-100px);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        h1 {
-            color: #333;
-            font-size: 32px;
-        }
-    </style>
+    h1 {
+      color: #333;
+      font-size: 32px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Click the Heart to Celebrate!</h1>
+  <h1>Click the Heart to Celebrate!</h1>
+  <div id="root"></div>
 
-    <!-- Container for the React app -->
-    <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
 
-    <!-- React App Script -->
-    <script type="text/babel">
-        const { useState } = React;
+    function App() {
+      const [clicked, setClicked] = useState(false);
 
-        function App() {
-            // State to show the message after the heart is clicked
-            const [showMessage, setShowMessage] = useState(false);
+      const handleClick = () => {
+        setClicked(true);
+      };
 
-            const handleClick = () => {
-                setShowMessage(true);
-            };
+      return (
+        <div className="App">
+          <div className="heart-container" onClick={handleClick}>
+            <span className="heart">❤️</span>
+          </div>
 
-            return (
-                <div className="App">
-                    <div className="heart-container" onClick={handleClick}>
-                        <span className="heart">❤️</span>
-                    </div>
+          {clicked && (
+            <>
+              <div className="falling-heart">❤️</div>
+              <p className="message">Happy Anniversary, Mahal ko!</p>
+            </>
+          )}
+        </div>
+      );
+    }
 
-                    {showMessage && <p className="message">Happy 3rd Anniversary, Mahal Ko! 🎉🎉</p>}
-                </div>
-            );
-        }
-
-        // Render the App component inside the 'root' div
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
 </body>
 </html>
