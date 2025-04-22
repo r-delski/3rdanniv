@@ -35,21 +35,33 @@
         }
 
         .message {
-            font-size: 24px;
+            font-size: 30px;
             color: #ff6347;
             font-weight: bold;
             display: block;
             margin-top: 20px;
             opacity: 0;
-            animation: fadeIn 1s forwards;
+            animation: fadeIn 1.5s forwards, slideIn 1.5s forwards;
+            animation-delay: 0.5s; /* Delay the slideIn */
         }
 
+        /* Fade-in effect */
         @keyframes fadeIn {
             0% {
                 opacity: 0;
             }
             100% {
                 opacity: 1;
+            }
+        }
+
+        /* Slide-in effect from the bottom */
+        @keyframes slideIn {
+            0% {
+                transform: translateY(30px);
+            }
+            100% {
+                transform: translateY(0);
             }
         }
     </style>
@@ -78,7 +90,7 @@
                         <span className="heart">❤️</span>
                     </div>
 
-                    {showMessage && <p className="message">Happy 3rd Anniversary! 🎉🎉</p>}
+                    {showMessage && <p className="message">Happy 3rd Anniversary, Mahal Ko! 🎉🎉</p>}
                 </div>
             );
         }
