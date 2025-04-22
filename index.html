@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Anniversary Surprise</title>
+  <title>❤️madebydelski</title>
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone"></script>
@@ -11,9 +11,11 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      background-color: #f3f4f6;
+      background-color: #fff0f5;
       padding: 50px;
       overflow: hidden;
+      height: 100vh;
+      position: relative;
     }
 
     .heart-container {
@@ -22,49 +24,69 @@
       cursor: pointer;
       position: relative;
       z-index: 10;
+      transition: transform 0.2s;
+    }
+
+    .heart-container:hover {
+      transform: scale(1.1);
     }
 
     .heart {
-      color: red;
+      color: #ff3e6c;
+      text-shadow: 0 0 10px rgba(255, 62, 108, 0.6);
+    }
+
+    .falling-heart,
+    .falling-word {
+      position: absolute;
+      top: -50px;
+      animation: fall 4s ease-out forwards;
+      transform: translateX(-50%);
+      z-index: 5;
+      pointer-events: none;
     }
 
     .falling-heart {
-      position: absolute;
-      left: 50%;
-      top: -100px;
-      font-size: 100px;
-      color: red;
-      animation: fallHeart 2s ease forwards;
-      transform: translateX(-50%);
+      font-size: 40px;
+      color: #ff3e6c;
+      opacity: 1;
     }
 
-    @keyframes fallHeart {
+    .falling-word {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff5a7a;
+      opacity: 0.9;
+    }
+
+    @keyframes fall {
       0% {
         transform: translate(-50%, -100px);
-        opacity: 0;
+        opacity: 1;
       }
       100% {
-        transform: translate(-50%, 300px);
-        opacity: 1;
+        transform: translate(-50%, 100vh);
+        opacity: 0;
       }
     }
 
     .message {
-      font-size: 30px;
-      color: #ff6347;
+      font-size: 28px;
+      color: #ff5a7a;
       font-weight: bold;
+      margin-top: 40px;
       opacity: 0;
-      animation: fallMessage 2s ease forwards;
-      animation-delay: 1s;
+      animation: fadeIn 2s ease forwards;
+      animation-delay: 0.5s;
     }
 
-    @keyframes fallMessage {
+    @keyframes fadeIn {
       0% {
-        transform: translateY(-50px);
+        transform: translateY(20px);
         opacity: 0;
       }
       100% {
-        transform: translateY(0);
+        transform: translateY(0px);
         opacity: 1;
       }
     }
@@ -76,30 +98,88 @@
   </style>
 </head>
 <body>
-  <h1>Click the Heart to Celebrate!</h1>
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useEffect } = React;
 
     function App() {
-      const [clicked, setClicked] = useState(false);
+      const [hearts, setHearts] = useState([]);
+      const [words, setWords] = useState([]);
+      const [raining, setRaining] = useState(false);
+      const [messageShown, setMessageShown] = useState(false);
 
-      const handleClick = () => {
-        setClicked(true);
+      const phrases = ["Happy", "3rd", "Anniversary", "Mahal", "Ko", "💖"];
+
+      const startRain = () => {
+        if (!raining) {
+          setRaining(true);
+          setMessageShown(true);
+        }
       };
+
+      useEffect(() => {
+        let interval;
+        if (raining) {
+          interval = setInterval(() => {
+            const heartCount = 5;
+            const wordCount = 2;
+
+            const newHearts = Array.from({ length: heartCount }).map((_, i) => ({
+              id: Date.now() + Math.random(),
+              left: Math.random() * 100,
+              delay: Math.random(),
+            }));
+
+            const newWords = Array.from({ length: wordCount }).map((_, i) => ({
+              id: Date.now() + 1000 + Math.random(),
+              left: Math.random() * 100,
+              delay: Math.random(),
+              text: phrases[Math.floor(Math.random() * phrases.length)],
+            }));
+
+            setHearts((prev) => [...prev, ...newHearts]);
+            setWords((prev) => [...prev, ...newWords]);
+          }, 500); // every 0.5 sec
+        }
+
+        return () => clearInterval(interval);
+      }, [raining]);
 
       return (
         <div className="App">
-          <div className="heart-container" onClick={handleClick}>
+          <div className="heart-container" onClick={startRain}>
             <span className="heart">❤️</span>
           </div>
 
-          {clicked && (
-            <>
-              <div className="falling-heart">❤️</div>
-              <p className="message">Happy Anniversary, Mahal ko!</p>
-            </>
+          {hearts.map((heart) => (
+            <div
+              key={heart.id}
+              className="falling-heart"
+              style={{
+                left: `${heart.left}%`,
+                animationDelay: `${heart.delay}s`,
+              }}
+            >
+              ❤️
+            </div>
+          ))}
+
+          {words.map((word) => (
+            <div
+              key={word.id}
+              className="falling-word"
+              style={{
+                left: `${word.left}%`,
+                animationDelay: `${word.delay}s`,
+              }}
+            >
+              {word.text}
+            </div>
+          ))}
+
+          {messageShown && (
+            <p className="message">Happy 3rd Anniversary, Mahal ko! 💗</p>
           )}
         </div>
       );
